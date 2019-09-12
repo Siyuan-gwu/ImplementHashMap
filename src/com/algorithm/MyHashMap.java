@@ -1,5 +1,7 @@
 package com.algorithm;
-
+//Use generic type
+//hash map is implmented by a array of linkedlist
+//This hash map supports concurrency
 public class MyHashMap<K, V> {
 	
 	public static class Node<K, V> {
@@ -21,14 +23,18 @@ public class MyHashMap<K, V> {
 			this.value = value;
 		}
 	}
+	//define the default capacity of hashmap is 16.
 	public static final int DEFAULT_INITIAL_CAPACITY = 16;
+	//if the load factor > 0.75, then resize the hashmap and rehashing
 	public static final float DEFAULT_LOAD_FACTOR = 0.75f;
 	public Node<K, V>[] buckets;
 	public int size;
 	public float loadFactor;
+	//default consturctor
 	public MyHashMap() {
 		this(DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR);
-	} 
+	}
+	//customized constructor
 	public MyHashMap(int cap, float loadFactor) {
 		if (cap < 0) {
 			throw new IllegalArgumentException("Capacity cannot be < 0");
@@ -44,6 +50,11 @@ public class MyHashMap<K, V> {
 	public synchronized boolean isEmpty() {//sync
 		return size == 0;
 	}
+	/* Put: 1. find the target index in array
+	 * 	2. check whether the node is in the linkedlist
+	 * 		2.1. if exist, update the value
+	 *		2.2. if not, insert a new node to head.
+	 */
 	public synchronized V put(K key, V value) {//sync
 		int index = getIndex(key);
 		Node<K, V> head = buckets[index];
@@ -76,6 +87,12 @@ public class MyHashMap<K, V> {
 		}
 		return null;
 	}
+	/* In Java, there is a contract between equals() and hashCode(),
+	 * the developers need to maintain:
+	 * 	1. If one.equals(two), it is a must that one.hashCode() == two.hashCode()
+	 *	2. If one.hashCode() == two.hashCode(), it is not necessary one.equals(two)
+	 *  When you want to override equals(), please definitely override hashCode() as well :)
+	 */
 	public boolean containsKey(K key) {
 		int index = getIndex(key);
 		Node<K, V> head = buckets[index];
@@ -87,7 +104,7 @@ public class MyHashMap<K, V> {
 		}
 		return false;
 	}
-	public synchronized V remove(K key) {
+	public synchronized V remove(K key) {//sync
 		int index = getIndex(key);
 		Node<K, V> head = buckets[index];
 		Node<K, V> dummy = new Node<K, V>(head.key, head.value);
@@ -143,7 +160,8 @@ public class MyHashMap<K, V> {
 		if (key == null) {
 			return 0;
 		}
-		return key.hashCode() & 0X0FFFFFFF;
+		//make sure the hashCode is positive number
+		return key.hashCode() & 0X7FFFFFFF;
 	}
 	
 	private int getIndex(K key) {
@@ -162,17 +180,18 @@ public class MyHashMap<K, V> {
 		}
 		buckets = array;
 	}
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		MyHashMap<String, Integer> sol = new MyHashMap<>();
-		System.out.println(sol.isEmpty());
-		System.out.println(sol.size());
-		System.out.println(sol.put("Tom", 5));
-		System.out.println(sol.put("Jerry", 10));
-		System.out.println(sol.get("Tom"));
-		System.out.println(sol.put("Tom", 10));
-		System.out.println(sol.size());
-		System.out.println(sol.remove("Tom"));
-	}
+	
+// 	public static void main(String[] args) {
+// 		// TODO Auto-generated method stub
+// 		MyHashMap<String, Integer> sol = new MyHashMap<>();
+// 		System.out.println(sol.isEmpty());
+// 		System.out.println(sol.size());
+// 		System.out.println(sol.put("Tom", 5));
+// 		System.out.println(sol.put("Jerry", 10));
+// 		System.out.println(sol.get("Tom"));
+// 		System.out.println(sol.put("Tom", 10));
+// 		System.out.println(sol.size());
+// 		System.out.println(sol.remove("Tom"));
+// 	}
 
 }
