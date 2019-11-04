@@ -27,9 +27,9 @@ public class MyHashMap<K, V> {
 	public static final int DEFAULT_INITIAL_CAPACITY = 16;
 	//if the load factor > 0.75, then resize the hashmap and rehashing
 	public static final float DEFAULT_LOAD_FACTOR = 0.75f;
-	public Node<K, V>[] buckets;
-	public int size;
-	public float loadFactor;
+	private Node<K, V>[] buckets;
+	private int size;
+	private float loadFactor;
 	//default consturctor
 	public MyHashMap() {
 		this(DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR);
